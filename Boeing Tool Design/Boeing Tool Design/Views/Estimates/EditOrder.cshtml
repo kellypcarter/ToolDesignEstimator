@@ -1,0 +1,103 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "Edit Design Order";
+    Boeing_Tool_Design.Models.DesignOrder DOrder = Model.DesignOrders.First();
+
+}
+
+<h2>Edit Design Order</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => DOrder.DesignOrderSID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => DOrder.DesignOrderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.DesignOrderNumber, new { @class = "form-control" } )
+                @Html.ValidationMessageFor(model => DOrder.DesignOrderNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="DOrder_DescriptiveName">Descriptive Name</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.DescriptiveName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => DOrder.DescriptiveName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Tool Type *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().ToolTypeID, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="ToolTypeID">Tool Type</label>
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Estimates.First().ToolTypeID, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.DropDownListFor(
+                    model => DOrder.ToolTypeID,
+                    new SelectList(Model.ToolTypes, "ToolTypeID", "ToolCode", DOrder.ToolTypeID),
+                    new { @class = "form-control" }
+                )
+                @Html.ValidationMessageFor(model => DOrder.ToolTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Part Number *@
+        <div class="form-group">
+            <label class="control-label col-md-2" for="DOrder_PartNumber">Part Number</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.PartNumber, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => DOrder.PartNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => DOrder.IsCompleted, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => DOrder.IsCompleted)
+                    @Html.ValidationMessageFor(model => DOrder.IsCompleted, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => DOrder.ActualHours, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => DOrder.ActualHours, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => DOrder.ActualHours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" value="Save" class="btn btn-primary"><i class="fa fa-floppy-o"></i> &nbsp; Save</button>
+            </div>
+        </div>
+    </div>
+}
+
+    <a class="btn btn-default" href="@Url.Action("DesignOrders", "Estimates")">
+        <i class="fa fa-reply"></i> &nbsp; Back to List
+    </a>
+    <a class="btn btn-danger" href="@Url.Action("DeleteOrder", "Estimates", new { id = Model.DesignOrders.First().DesignOrderSID })" 
+        onclick = "return confirm(
+            'Are you sure you want to delete this design order? This will also delete all historical estimates for this design order.'
+        )"> 
+        <i class="fa fa-trash"></i> &nbsp; Delete Design Order
+    </a>
+
+    @*<i class="fa fa-reply"></i>
+    @Html.ActionLink("Back to List", "DesignOrders", null, new { @class = "btn btn-default" })*@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

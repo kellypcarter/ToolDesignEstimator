@@ -1,0 +1,348 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "Design Orders";
+}
+
+<style>
+    /* Sort icons */
+    th {
+        position: relative;
+    }
+
+    th:hover {
+        cursor: pointer;
+    }
+
+    th span.header-text {
+        margin-right: 5px;
+    }
+
+    th span.fa-sort-asc, th span.fa-sort-desc, th span.fa-sort {
+        position: absolute;
+        right: 3px;
+        top: 50%;
+        transform:translateY(-50%);
+        display: none;
+    }
+
+    th.sort-asc span.fa-sort-asc {
+        display: inline;
+    }
+
+    th.sort-desc span.fa-sort-desc {
+        display: inline;
+    }
+
+    th.sort-none span.fa-sort {
+        display: inline;
+    }
+
+    /* tables */
+    table.tablesorter {
+	    font-family:arial;
+	    background-color: #CDCDCD;
+	    margin:10px 0pt 15px;
+	    /*font-size: 9pt;*/
+	    width: 100%;
+	    text-align: left;
+    }
+    table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	    background-color: #e6EEEE;
+	    border: 1px solid #FFF;
+	    font-size: 8pt;
+	    padding: 4px;
+    }
+    table.tablesorter thead tr .header {
+	    background-image: url(/Content/sortertable/bg.gif);
+	    background-repeat: no-repeat;
+	    background-position: center right;
+	    cursor: pointer;
+    }
+    table.tablesorter tbody td {
+	    color: #3D3D3D;
+	    padding: 4px;
+	    background-color: #FFF;
+	    vertical-align: top;
+    }
+    table.tablesorter tbody tr.odd td {
+	    background-color:#F0F0F6;
+    }
+    table.tablesorter thead tr .headerSortUp {
+	    background-image: url(/Content/sortertable/asc.gif);
+    }
+    table.tablesorter thead tr .headerSortDown {
+	    background-image: url(/Content/sortertable/desc.gif);
+    }
+    table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+    background-color: #8dbdd8;
+    }
+    td {
+        padding: 10px!important;
+    }
+    #DesignOrderTable {
+        margin-top: 20px;
+    }
+</style>
+
+<h2>@ViewBag.Title</h2>
+
+<a style="margin-top:20px" class="btn btn-primary pull-right" href="@Url.Action("CreateOrder", "Estimates")"> <i class="glyphicon glyphicon-plus"></i> Add Design Order</a>
+
+    <div style="display:flex; align-items: flex-end;">
+        <div><h4>Filters: </h4></div>
+        <div style="padding-left:30px;">Order Number<input class="form-control" type="text" id="OrderNumFilter" onkeyup="filterOrderNum()" placeholder="Search Order Numbers.."></div>
+        <div style="padding-left:10px;">Tool Code<input class="form-control" type="text" id="ToolCodeFilter" onkeyup="filterToolCode()" placeholder="Search Tool Codes.."></div>
+        <div style="padding-left:10px;">Part Number<input class="form-control" type="text" id="PartNumFilter" onkeyup="filterPartNum()" placeholder="Search Part Numbers.."></div>
+        <div style="padding-left:10px;">
+            Completed
+            <select id="CompletedFilter" onchange="filterCompleted()" class="form-control">
+                <option value="yes">Yes</option>
+                <option value="no" selected="selected">No</option>
+                <option value="all">All</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="tablesorter table" id="DesignOrderTable">
+        <thead>
+            <tr>
+                <th><span class="header-text">Order Number</span></th>
+                <th><span class="header-text">Part #</span></th>
+                <th><span class="header-text">Tool Type</span></th>
+                <th><span class="header-text">Description</span></th>
+                <th><span class="header-text">Current Estimated Hours</span></th>
+                <th><span class="header-text">Creator</span></th>
+                <th><span class="header-text">Date Estimate Made</span></th>
+                <th><span class="header-text">Completed</span></th>
+                <th><span class="header-text">Actual Hours</span></th>
+                <th>@* Empty header for link column *@</th>
+            </tr> @*<span class="glyphicon glyphicon glyphicon-chevron-down"></span>*@
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DesignOrders)
+            {
+                <tr>
+                    <td>@if (item.DesignOrderNumber != null) { @item.DesignOrderNumber.ToString(); }</td>
+
+                    <td>@item.PartNumber</td>
+
+                    <td>
+                        @(Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == item.ToolTypeID) == null
+                ? "Unknown"
+                : Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == item.ToolTypeID).ToolCode)
+                    </td>
+
+                    <td>@item.DescriptiveName</td>
+
+                    <td>
+                        @(Model.Estimates.FirstOrDefault(e => e.DesignOrderSID == item.DesignOrderSID) == null
+                ? "No Estimates"
+                : Convert.ToString(Model.Estimates.FirstOrDefault(e => e.DesignOrderSID == item.DesignOrderSID).HoursEstimate))
+                    </td>
+
+                    <td>
+                        @(Model.AppUsers.FirstOrDefault(u => u.AppUserID == item.CreatedByUserID) == null
+                ? "Unknown"
+                : Model.AppUsers.FirstOrDefault(u => u.AppUserID == item.CreatedByUserID).GetFullName())
+                    </td>
+
+                    <td>
+                        @(Model.Estimates.FirstOrDefault(e => e.DesignOrderSID == item.DesignOrderSID) == null
+                ? item.getFormattedCreatedDate()
+                : Convert.ToString(Model.Estimates.FirstOrDefault(e => e.DesignOrderSID == item.DesignOrderSID).getFormattedCreatedDate()))
+                    </td>
+
+                    <td>@((item.IsCompleted ? "Yes" : "No"))</td>
+
+                    <td>@((item.ActualHours == null) ? "N/A" : Convert.ToString(@Html.DisplayFor(modelItem => item.ActualHours)))</td>
+
+                    <td>
+                        @Html.ActionLink("Edit Order", "EditOrder", "Estimates", new { id = item.DesignOrderSID }, new { @style = "" }) |
+                        @Html.ActionLink("Manage" + ((char)(160)) + "Estimates", "List", new { id = item.DesignOrderSID }, new { @style = "" }) 
+                       
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    @section Scripts {
+        <script>
+            $(function () {
+                filterCompleted();
+
+                // Add arrows on sorter table
+                $("#DesignOrderTable th").each(function () {
+                    // Trim the html
+                    $(this).html($(this).html().trim());
+
+                    if ($(this).html() != "") {
+                        $(this).append("<span class=\"fa fa-sort\"></span><span class=\"fa fa-sort-asc\"></span><span class=\"fa fa-sort-desc\"></span>");
+                    }
+
+                    $(this).addClass("sort-none");
+                });
+
+                // Add click action to sorter table
+                $("#DesignOrderTable th").on("click", function () {
+                    SortTable($(this).parent().parent().parent().attr("id"), $("#DesignOrderTable th").index($(this)));
+                });
+
+            });
+
+
+
+            function SortTable(TableID, SortColIndex) {
+                var Table = $("#" + TableID);
+                var SortedHeader = Table.find("tr").first().children("th").eq(SortColIndex);
+                var RowSet = Table.children("tbody").children("tr");
+                var SortOrder = "asc";
+
+                // Check if this is sorting ascending or descending
+                if (SortedHeader.hasClass("sort-asc")) {
+                    SortOrder = "desc";
+                }
+
+                // Remove sort orders from all the headers
+                Table.find("tr").first().children("th").each(function () {
+                    $(this).removeClass("sort-asc");
+                    $(this).removeClass("sort-desc");
+                    $(this).addClass("sort-none");
+                });
+
+                var TotalCols = Table.find("tr").first().children().length;
+                var TotalRows = RowSet.length;
+
+                var Switched = true;
+
+                //console.log('>>>>>> Begin output >>>>>>');
+                while (Switched) {
+                    // Get the number of columnts in the table again
+                    Table = $("#" + TableID);
+                    RowSet = Table.children("tbody").children("tr");
+
+                    Switched = false;
+                    // Loop through rows and switch elements until no more elements need to be switched
+                    for (var i = 0; i < TotalRows; i++) {
+                        if (i + 1 < RowSet.length) { // Do for all except the last row
+                            var ValA = RowSet.eq(i).children("td").eq(SortColIndex).html().trim();
+                            var ValB = RowSet.eq(i + 1).children("td").eq(SortColIndex).html().trim();
+
+                            if ((!isNaN(ValA)) && (!isNaN(ValB))) {
+                                ValA = parseFloat(ValA);
+                                ValB = parseFloat(ValB);
+                            }
+
+                            //console.log('Iteration-Row: ' + String(i) + ' - ' + String(ValA) + ' > ' + String(ValB) + ' ' + String(ValA > ValB));
+
+                            if (((ValA > ValB) && (SortOrder == "asc")) || ((ValA < ValB) && (SortOrder == "desc"))) {
+                                // Switch this row with the next row
+                                RowSet.eq(i).insertAfter(RowSet.eq(i + 1))
+                                Switched = true;
+                            };
+                        }
+                    }
+                }
+                //console.log('>>>>>> End output >>>>>>');
+
+                // Add in the sort order class
+                if ((SortOrder == "asc")) {
+                    SortedHeader.removeClass("sort-none");
+                    SortedHeader.addClass("sort-asc")
+                }
+                else {
+                    SortedHeader.removeClass("sort-none");
+                    SortedHeader.addClass("sort-desc")
+                }
+            }
+
+            function filterOrderNum() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("OrderNumFilter");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("DesignOrderTable");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+            function filterPartNum() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("PartNumFilter");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("DesignOrderTable");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[3];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+            function filterToolCode() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("ToolCodeFilter");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("DesignOrderTable");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[2];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+            function filterCompleted() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("CompletedFilter");
+                filter = input.value.toUpperCase();
+                console.log(filter);
+                table = document.getElementById("DesignOrderTable");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[7];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || filter == "ALL") {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+
+        </script>
+    }

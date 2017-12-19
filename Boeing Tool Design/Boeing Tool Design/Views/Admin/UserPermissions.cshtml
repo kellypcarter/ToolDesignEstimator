@@ -1,0 +1,224 @@
+﻿@model Boeing_Tool_Design.Models.AdminViewModel
+
+<h3>NOTE: </h3><p>If you change your own email address, you will be logged out and need to sign back in with your updated email.</p>
+
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>
+                    <label>First Name</label>
+                </th>
+                <th>
+                    <label>Last Name</label>
+                </th>
+                <th>
+                    <label>Email</label>
+                </th>
+                <th>
+                    <label>Permission</label>
+                </th>
+                <th>
+                    <label>Password</label>
+                </th>
+                <th>
+                </th>
+                <th>
+                    <label>Options</label>
+                </th>
+            </tr>
+
+            @foreach (var item in Model.AppUsers)
+            {
+                if (!item.IsDeleted)
+                {
+                    <tr id=@item.AppUserID>
+                        <td id="FirstName">
+                            <span .class="editable" id="@("FirstName"+item.AppUserID)" value="@item.FirstName">@item.FirstName</span>
+                        </td>
+                        <td id="LastName">
+                            <span .class="editable" id="@("LastName"+item.AppUserID)" value="@item.LastName">@item.LastName</span>
+                        </td>
+                        <td id="UserEmail">
+                            <span .class="editable" id="@("UserEmail"+item.AppUserID)" value="@item.UserEmail"><a href="mailto:@item.UserEmail">@item.UserEmail</a></span>
+                        </td>
+                        <td id="AccessLevelID">
+                            @if (item.AccessLevelID == 1)
+                            {
+                                <select name="AdminSelect" onchange="updatePermissions(@item.AppUserID, @item.AccessLevelID);" id="@("permissionSelect" + item.AppUserID)">
+                                    <option value="1">Admin</option>
+                                    <option value="2">User</option>
+                                </select>
+                            }
+                            @if (item.AccessLevelID == 2)
+                            {
+                                <select name="UserSelect" onchange="updatePermissions(@item.AppUserID, @item.AccessLevelID);" id="@("permissionSelect" + item.AppUserID)">
+                                    <option value="2">User</option>
+                                    <option value="1">Admin</option>
+                                </select>
+                            }
+                        </td>
+
+                        <td id="Password">
+                            <input type="text" class="form-control" id="@("newPassword" + item.AppUserID)"/>
+                        </td>
+
+                        <td id="SavePasswordButton">
+                            <button style="cursor:pointer;" class="btn btn-default" onclick="changePassword(@item.AppUserID)" id="changePass">Save Password</button>
+                        </td>
+
+                        <td id="Options">
+                            <button style="cursor:pointer;" class="editbtn btn btn-primary">Edit</button>
+                            <button style="cursor:pointer;" onclick="deleteUser(@item.AppUserID)" class="deletebtn btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+<script src="/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+
+    //When a user changes the Permissions dial (either to Admin or User)
+    function deleteUser(appUserID) {
+
+        if (confirm('Are you sure you want to delete this user?')) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/DeleteUser",
+                data: {
+                    appUserID: appUserID
+                },
+                success: function (result) {
+                    if (result.success) {
+                        console.log(result.responseText);
+                        $('#' + appUserID).remove();
+                    }
+                    else {
+                        alert(result.responseText);
+                    }
+                },
+                error: function () {
+                    alert("Error deleting user from the database.");
+                }
+            });
+        }
+    };
+
+    //When a user changes the Permissions dial (either to Admin or User)
+    function updatePermissions(appUserID, accessLevel) {
+
+        var selectedPermission = $('#permissionSelect' + appUserID).val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/SavePermissions",
+            data: {
+                accessLevelID: selectedPermission,
+                appUserID : appUserID
+            },
+            success: function (result) {
+                if (result.success) {
+                    console.log(result.responseText);
+                }
+                else {
+                    $('#permissionSelect' + appUserID).val(accessLevel);
+                    alert(result.responseText);
+                }
+            },
+            error: function () {
+                alert("Error saving to database.");
+            }
+        });
+    };
+
+    //When the user clicks on the edit or save feature in the UserPermissions table
+    $(document).ready(function () {
+        $('.editbtn').click(function () {
+            var currentTD = $(this).parents('tr').find('span');
+            //Edit
+            if ($(this).html() == 'Edit') {
+                $.each(currentTD, function () {
+                    $(this).prop('contenteditable', true)
+                    //change the border to show that the fields are no editable
+                    $(this).css({
+                        "border-color": "#C1E0FF",
+                        "border-width": "3px",
+                        "border-style": "solid"
+                    })
+                });
+            //Save
+            } else {
+                var userID = $(this).closest('tr').attr('id')
+                $.each(currentTD, function () {
+                    $(this).prop('contenteditable', false)
+                    //remove the border to show fields are no longer editable
+                    $(this).css("border", "none")
+                });
+
+                //add all data in the table into a form to be sent to the AdminController to be saved in the DB
+                var formData = new FormData()
+                $.each(currentTD, function () {
+                    formData.append($(this).closest('td').attr('id'), $(this).text())
+                    console.log($(this).text())
+                });
+                formData.append("UserID", userID);
+
+                console.log(userID);
+
+                //Sending updated user data to controller
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/UpdateUser",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        if (result.isRedirect) {
+                            window.location.href = result.redirectUrl;
+                        }
+                        else {
+                            alert(result.responseText)
+                        }
+                    },
+                    error: function (response) {
+                        alert("Error saving to the database.")
+                    }
+                });
+            }
+
+            //Change the HTML to edit if currently saved, or save if currently edit
+            $(this).html($(this).html() == 'Edit' ? 'Save' : 'Edit')
+        });
+    });
+
+    //When a user changes the Permissions dial (either to Admin or User)
+    function changePassword(appUserID) {
+
+        if (confirm('Are you sure you want to change this user\'s password?')) {
+            var newPassword = $('#newPassword' + appUserID).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/ChangePassword",
+                data: {
+                    newPassword: newPassword,
+                    appUserID: appUserID
+                },
+                success: function (result) {
+                    $('#newPassword' + appUserID).val('');
+                    alert(result.responseText);
+                },
+                error: function () {
+                    alert("Error saving to the databse");
+                }
+            });
+        }
+    };
+
+</script>

@@ -1,0 +1,97 @@
+﻿@model Boeing_Tool_Design.Models.AdminViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="sendToolCode">
+            <div class="form-group">
+                <label for="sel1">Tool:</label>
+                <select name='tool' onchange="editToolSelected();" class="form-control" id="edittoolselect">
+                    <option></option>
+                    @foreach (var item in Model.ToolTypes)
+                    {
+                    <option>
+                        @item.ToolCode
+                    </option>
+                    }
+                </select>
+            </div>
+        </form>
+        <form id="toolattributes" onsubmit="SaveEditedTool()">
+            <div style="display:none" class="form-group toolselected">
+                <label for="toolName">Tool Name:</label>
+                <input maxlength="100" type="text" class="form-control" id="editToolName" name="toolName" required />
+            </div>
+            <div style="display:none" class="form-group toolselected">
+                <label for="toolDesc">Tool Description:</label>
+                <input maxlength="2000" type="text" class="form-control" id="editToolDesc" name="toolDesc" required />
+            </div>
+            <div style="display:none" class="form-group toolselected">
+                <label for="stFlow">Standard Flow:</label>
+                <input name='stFlow' type="number" min = "0" step="any" class="form-control" id="editStFlow" required />
+            </div>
+            <div style="display:none" class="form-group toolselected">
+                <label for="toolDesc">Stress Required by Default:</label>
+                <select type="text" class="form-control" id="editStressReq" name="stressReq">
+                    <option> Yes </option>
+                    <option> No </option>
+                </select>
+            </div>
+            <button style="display:none;" id="saveTool" class="btn btn-primary toolselectedbtn"> Save Changes</button>
+            @*<button style="display:none; margin-left:10px;" id="deleteTool" class="btn btn-default toolselectedbtn"> Delete Tool </button>*@
+        </form>
+    </div>
+</div>
+
+<script>
+    function editToolSelected() {
+        var toolselection = $('#edittoolselect').find(":selected").text();
+        console.log(toolselection)
+        if (toolselection != "") {
+            $(".toolselected").css("display", "block")
+            $(".toolselectedbtn").css("display", "inline-block")
+
+            toolUpdateAjax("/Admin/getStFlow", "$('#editStFlow').val(result);");
+            toolUpdateAjax("/Admin/getToolName", "$('#editToolName').val(result);");
+            toolUpdateAjax("/Admin/getToolDesc", "$('#editToolDesc').val(result);");
+            toolUpdateAjax("/Admin/getStressDefault", "$('#editStressReq').val(result);");
+
+        } else {
+            $(".toolselected").css("display", "none")
+        }
+
+
+    };
+
+    function toolUpdateAjax(URL_address, show) {
+        $.ajax({
+            type: "POST",
+            url: URL_address,
+            data: $('#sendToolCode').serialize(),
+            success: function (result) {
+                eval(show);
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    };
+
+    function SaveEditedTool() {
+        var formData = new FormData($('#toolattributes')[0]);
+        formData.append('tool', $('#edittoolselect').val())
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/editTool",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+            },
+            error: function () {
+            }
+        });
+    };
+
+
+</script>

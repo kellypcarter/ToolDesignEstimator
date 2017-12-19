@@ -1,0 +1,149 @@
+﻿.navbar {
+    border: none!important;
+}
+body {
+    padding-top: 0;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* Change appearance of hamburger icon on collapse */
+  .navbar-toggle, .icon-bar {
+    border:1px solid #3277BD;
+}
+
+  /* Hide navbar items not shown until collapsed */
+#showOnCollapse {
+    display: none;
+}
+
+/* Show all nav items on the same dropdown/hamburger menu */
+@media only screen and (max-width: 768px) {
+    #hideOnCollapse {
+        display: none;
+    }
+
+    #showOnCollapse {
+        display: inline;
+    }
+
+    .nav > li, .nav > form > li {
+        margin: 0 !important;
+    }
+
+    .navbar-collapse {
+        box-shadow: none;
+    }
+
+    .nav > form > li > a {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+    }
+
+    .nav > form > li > a:hover {
+    color: black!important;
+    }
+    .nav > form > li > a:hover, .nav > form > li > a:focus {
+    text-decoration: none;
+    background-color: #eeeeee;
+    }
+
+    .nav-center ul {
+    display: block!important;
+    }
+}
+
+
+  /* Set margin of the bottom navigation bar */
+#bottomNavRow li {
+      margin-left: 22px;
+      margin-right: 22px;
+  }
+
+#bottomNav {
+    background-color:#394957;
+}
+
+/* Make bottom nav bar items inline-blocks */
+.nav-center ul {
+    display: inline-block;
+}
+
+
+/* Change text color of bottomNav on hover */
+.nav > li > a:hover {
+    color: black!important;
+    cursor: pointer;
+}
+
+
+#bottomNav a {
+    color: white;
+}
+
+.row {
+    margin: 0!important;
+}
+
+
+#bottomNavRow {
+    background-color:#394957;
+    margin: 0!important;
+}
+
+.nav.nav-center {
+    margin:0;
+    float:none;
+}
+
+.nav{
+    list-style:none;
+    margin:0;
+    padding:0;
+    text-align:center;
+}
+
+
+#title {
+    font-size: 16px; 
+    margin-left: 20px;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    min-width: 80px;
+}
+
+.dropdown-menu > li {
+    text-align: left;
+}
+
+#breadcrumbsRow {
+    height: 20px;
+    background-color:#2E3A46;
+    padding: 0 0 0 20px;
+    color: white;
+    font-weight: bold;
+}
+
+

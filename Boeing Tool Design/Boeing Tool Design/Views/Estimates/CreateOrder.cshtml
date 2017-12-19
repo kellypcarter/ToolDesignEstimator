@@ -1,0 +1,87 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "Create Design Order";
+    Boeing_Tool_Design.Models.DesignOrder DOrder = Model.DesignOrders.First();
+}
+
+<h2>Design Order Information</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+
+        @* Hidden form elements: on create, just keep the default (zero) *@
+        @Html.HiddenFor(model => DOrder.IsCompleted)
+        @Html.HiddenFor(model => DOrder.ActualHours)
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Design Order Number *@
+        <div class="form-group">
+            @Html.LabelFor(model => DOrder.DesignOrderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.DesignOrderNumber, new { @class = "form-control" })
+                @*@Html.ValidationMessage("DOrderExists", new { @class = "text-danger" })*@
+
+                @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+                {
+                @Html.Raw(HttpUtility.HtmlDecode(Html.ValidationSummary().ToHtmlString()))
+                }
+                @Html.ValidationMessageFor(model => DOrder.DesignOrderNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Descriptive Name *@
+        <div class="form-group">
+            <label class="control-label col-md-2" for="DOrder_DescriptiveName">Descriptive Name</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.DescriptiveName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => DOrder.DescriptiveName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Tool Type *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().ToolTypeID, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="ToolTypeID">Tool Type</label>
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Estimates.First().ToolTypeID, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.DropDownListFor(
+                    model => DOrder.ToolTypeID,
+                    new SelectList(Model.ToolTypes, "ToolTypeID", "ToolCode"),
+                    new { @class = "form-control" }
+                )
+                @Html.ValidationMessageFor(model => DOrder.ToolTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Part Number *@
+        <div class="form-group">
+            <label class="control-label col-md-2" for="DOrder_PartNumber">Part Number</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => DOrder.PartNumber, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => DOrder.PartNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" name="save" value="Save" class="btn btn-primary" />
+                <input type="submit" name="saveAndEstimate" value="Save and Make Estimate" class="btn btn-basic" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a class="btn btn-default" href="@Url.Action("DesignOrders", "Estimates" )"> <i class="fa fa-reply"></i> &nbsp; Back to List</a>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

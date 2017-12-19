@@ -1,0 +1,35 @@
+﻿@model Boeing_Tool_Design.Models.AdminViewModel
+
+
+<div class="row">
+    <div class="col-md-12">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <form method="post" action="@Url.Action("addTool", "Admin")" id="createTool">
+            <div class="form-group">
+                <label for="toolCode">Tool Code:</label>
+                <input maxlength="10" type="text" class="form-control" id="toolCode" name="toolCode" required />
+            </div>
+            <div class="form-group">
+                <label for="toolName">Tool Name:</label>
+                <input maxlength="100" type="text" class="form-control" id="toolName" name="toolName" required />
+            </div>
+            <div class="form-group">
+                <label for="toolDesc">Tool Description:</label>
+                <input maxlength="2000" type="text" class="form-control" id="toolDesc" name="toolDesc" required />
+            </div>
+            <div class="form-group">
+                <label for="stFlow">Standard Flow:</label>
+                <input name='stFlow' type="number" min="0" step="any" class="form-control" id="stFlow" required>
+            </div>
+            <div class="form-group">
+                <label for="toolDesc">Stress Required by Default:</label>
+                <select type="text" class="form-control" id="toolDesc" name="stressReq" required>
+                    <option> Yes </option>
+                    <option> No </option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary"> Add Tool </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Settings</h2>
+
+<h3>NOTE: </h3><p>If you change your email address, you will be logged out and need to sign back in with your updated email.</p>
+
+<br />
+
+<div>
+<form method="post" action="@Url.Action("Settings", "User")" id="changesettings">
+
+    @if (ViewData.ModelState.Keys.Any(k=> ViewData.ModelState[k].Errors.Any())) {
+    <div class="alert alert-danger">
+        <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        @Html.ValidationMessage("Error", new { @class = "text-danger" })
+    </div>
+    }
+    
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @Html.Encode(TempData["success"])
+        </div>
+    }
+    
+
+    <div class="form-group">
+        <label for="firstnamechange">First Name</label>
+        <input type="text" class="form-control" id="firstnamechange" name="settingsfirstname" value="@Html.Action("getFirstName", "User")" />
+    </div>
+    <div class="form-group">
+        <label for="lastnamechange">Last Name</label>
+        <input type="text" class="form-control" id="lastnamechange" name="settingslastname" value="@Html.Action("getLastName", "User")" />
+    </div>
+    <div class="form-group">
+        <label for="emailchange">Email Address</label>
+        <input type="email" class="form-control" id="emailchange" name="settingsemail" value="@User.Identity.Name" />
+    </div>
+
+
+    <div style="margin-top:20px; margin-bottom:15px;" id="resetpwbtn"> <label style="cursor:pointer;" onclick="ResetPassword(event, this)"><i id="resetpwcaret" class="fa fa-caret-right"></i>  <b>Change Password</b></label></div>
+
+    <div style="margin-top:10px;" class="form-group resetpw hidden">
+        <label for="emailchange">Old Password</label>
+        <input type="password" class="form-control" id="oldpw" name="oldpw" />
+    </div>
+
+    <div class="form-group resetpw hidden">
+        <label for="emailchange">New Password</label>
+        <input type="password" class="form-control" id="newpw" name="newpw" />
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+
+</form>
+    </div>
+
+
+<script>
+
+    function ResetPassword(e, div) {
+        console.log("Hello")
+        e.preventDefault();
+        if ($(".resetpw").hasClass("hidden")) {
+            $(".resetpw").removeClass("hidden");
+            $("#resetpwcaret").removeClass("fa-caret-right");
+            $("#resetpwcaret").addClass("fa-caret-down");
+        }
+        else {
+            $(".resetpw").addClass("hidden");
+            $("#resetpwcaret").removeClass("fa-caret-down");
+            $("#resetpwcaret").addClass("fa-caret-right");
+        }
+
+
+    }
+
+</script>

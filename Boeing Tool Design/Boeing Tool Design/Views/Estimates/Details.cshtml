@@ -1,0 +1,240 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Boeing_Tool_Design.Models.Estimate ThisEstimate = Model.Estimates.First();
+    Boeing_Tool_Design.Models.DesignOrder DOrder = Model.DesignOrders.Where(d => d.DesignOrderSID == ThisEstimate.DesignOrderSID).First();
+}
+
+<style>
+    /* tables */
+    dt {
+        width: 300px !important;
+        margin-right: 15px;
+        margin-bottom: 10px;
+    }
+
+    dd {
+        display: inline !important;
+        margin: 0 !important;
+    }
+
+
+    table.tablesorter {
+        font-family: arial;
+        background-color: #CDCDCD;
+        margin: 10px 0pt 15px;
+        font-size: 8pt;
+        width: 100%;
+        text-align: left;
+    }
+
+        table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+            background-color: #e6EEEE;
+            border: 1px solid #FFF;
+            font-size: 8pt;
+            padding: 4px;
+        }
+
+        table.tablesorter thead tr .header {
+            background-image: url(/Content/sortertable/bg.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+        table.tablesorter tbody td {
+            color: #3D3D3D;
+            padding: 4px;
+            background-color: #FFF;
+            vertical-align: top;
+        }
+
+        table.tablesorter tbody tr.odd td {
+            background-color: #F0F0F6;
+        }
+
+        table.tablesorter thead tr .headerSortUp {
+            background-image: url(/Content/sortertable/asc.gif);
+        }
+
+        table.tablesorter thead tr .headerSortDown {
+            background-image: url(/Content/sortertable/desc.gif);
+        }
+
+        table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+            background-color: #8dbdd8;
+        }
+</style>
+
+@* Show a banner if this is not the latest estimate in the series *@
+@if (!Model.Estimates.First().IsLatestEstimate)
+{
+    <div style="display:flex;justify-content:center;align-items:center;background-color:indianred;padding: 10px;color:white;">
+        Warning: This is not the latest estimate for this design order. <a style="margin-left:20px;" class="btn btn-default" href="/estimates/Details/@(ViewBag.LatestEstimateID)">View Latest</a>
+    </div>
+}
+
+@*<h2>Design Order</h2>*@
+<table class="table tablesorter" style="font-size:2rem;">
+    <thead>
+        <tr>
+            <th style="font-size:2rem;">Design Order Number</th>
+            <th style="font-size:2rem;">Part Number</th>
+            <th style="font-size:2rem;">Tool Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@DOrder.DesignOrderNumber</td>
+            <td>@DOrder.PartNumber</td>
+            <td>@(Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == DOrder.ToolTypeID).ToolCode)</td>
+        </tr>
+    </tbody>
+</table>
+
+@*<p>
+    @Html.ActionLink("Create New Estimate", "Create", new { id = Model.Estimates.First().DesignOrderSID })*@
+    <a style="display:inline-block;" class="btn btn-primary pull-right" href="@Url.Action("Create", "Estimates", new { id = Model.Estimates.First().DesignOrderSID })"> <i class="glyphicon glyphicon-plus"></i> Create Estimate</a>
+
+@*</p>*@
+<br />
+<br />
+<div class="col-md-12">
+    <h4>Hour Breakdown</h4>
+    <hr style="border-top: dotted 1px;" />
+    
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+
+
+                <dt>@Html.DisplayNameFor(model => ThisEstimate.HoursEstimate)</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.HoursEstimate) hours</dd>
+
+                <dt>Design Hours</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.DesignHour) hours</dd>
+
+                <dt>Stress Hours</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.StressHour) hours</dd>
+
+                <dt>Check Hours</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.CheckHour) hours</dd>
+
+                <dt>Release Hours</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.ReleaseHour) hours</dd>
+
+                <dt>Design Flow (M days)</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.DesignFlow) days</dd>
+                </dl>
+            </div>
+
+        <div class="col-md-6">
+            <img style="max-height:250px;" src="@Html.Raw(Model.Statistics.Where(s => s.ToolTypeID == DOrder.ToolTypeID && s.ComplexityLevel == ThisEstimate.ComplexityLevel && s.EffectiveStartDate <= ThisEstimate.CreatedDate && (s.EffectiveEndDate ?? DateTime.Now.Add(new System.TimeSpan(10, 0, 0, 0))) >= ThisEstimate.CreatedDate).FirstOrDefault().ImageFilePath) " />
+        </div>
+        </div>
+    <br/>
+    </div>
+    <div class="col-md-12">
+        <h4>Estimate Details</h4>
+        <hr style="border-top: dotted 1px;" />
+        <dl class="dl-horizontal">
+
+                <dt>Complexity Level</dt>
+                <dd> @Html.DisplayFor(model => ThisEstimate.ComplexityLevel)</dd>
+
+                <dt>Stress Work Type</dt>
+                <dd>@(Model.StressWorkTypes.First(s => s.StressWorkTypeID == ThisEstimate.StressWorkTypeID).StressWorkTypeName)</dd>
+
+                <dt>Sress Hours Included</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.IsStressIncluded)</dd>
+
+                <dt>Surfacing Required</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.NeedsSurfacing)</dd>
+
+                <dt>Engineering Released</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.EngineeringReleased)</dd>
+
+                <dt>Family Class</dt>
+                <dd>@(Model.FamilyClasses.Where(f => f.FamilyClassID == ThisEstimate.FamilyClassID).First().FamilyClassName)</dd>
+
+                @* Only show KBE info if this is a KBE design *@
+                @if (Model.FamilyClasses.Where(s => s.FamilyClassName.Contains("KBE")).Select(col => col.FamilyClassID).ToList().Contains((ThisEstimate.FamilyClassID ?? 1)))
+                {
+                    <dt>KBE Number of Designs to Break even</dt>
+                    <dd>@Html.DisplayFor(model => ThisEstimate.KBEBreakEvenNum)</dd>
+                }
+
+                <dt>Lastest Estimate</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.IsLatestEstimate)</dd>
+
+                <dt>@Html.DisplayNameFor(model => ThisEstimate.Comment)</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.Comment)</dd>
+
+                <dt>@Html.DisplayNameFor(model => ThisEstimate.ReasonForEstimateChange)</dt>
+                <dd>@Html.DisplayFor(model => ThisEstimate.ReasonForEstimateChange)</dd>
+
+                <dt>Creator</dt>
+                <dd>
+                    @(Model.AppUsers.FirstOrDefault(u => u.AppUserID == ThisEstimate.CreatedByUserID) == null
+                ? "unknown"
+                : Model.AppUsers.FirstOrDefault(u => u.AppUserID == ThisEstimate.CreatedByUserID).GetFullName())
+            </dd>
+
+            <dt>@Html.DisplayNameFor(model => ThisEstimate.CreatedDate)</dt>
+            <dd>@ThisEstimate.getFormattedCreatedDate()</dd>
+
+        </dl>
+        </div>
+    
+    <div class="row">
+    </div>
+
+    <div class="col-md-12">
+
+    <h4>Statistics Used</h4>
+        <hr style="border-top: dotted 1px;" />
+    <dl class="dl-horizontal">
+
+        <dt>Standard Deviation</dt>
+        <dd>
+            @Math.Round(
+           (
+               Model.Statistics.Where(
+                    s => s.ToolTypeID == DOrder.ToolTypeID
+                    && s.ComplexityLevel == ThisEstimate.ComplexityLevel
+                    && s.EffectiveStartDate <= ThisEstimate.CreatedDate
+                    && (s.EffectiveEndDate ?? DateTime.Now.Add(new System.TimeSpan(10, 0, 0, 0))) >= ThisEstimate.CreatedDate
+                ).FirstOrDefault()
+            ??
+                new Boeing_Tool_Design.Models.Statistic()
+            ).StandardDeviation
+            , 2
+        )
+    </dd>
+
+    <dt>Average Hours</dt>
+    <dd>
+        @Math.Round(
+           (
+               Model.Statistics.Where(
+                    s => s.ToolTypeID == DOrder.ToolTypeID
+                    && s.ComplexityLevel == ThisEstimate.ComplexityLevel
+                    && s.EffectiveStartDate <= ThisEstimate.CreatedDate
+                    && (s.EffectiveEndDate ?? DateTime.Now.Add(new System.TimeSpan(10, 0, 0, 0))) >= ThisEstimate.CreatedDate
+                ).FirstOrDefault()
+            ??
+                new Boeing_Tool_Design.Models.Statistic()
+            ).AverageHours
+            , 2
+        )
+    </dd>
+
+</dl>
+
+      </div>  
+
+
+<p>
+    <a class="btn btn-default" href="@Url.Action("List", "Estimates", new { id = Model.Estimates.First().DesignOrderSID })"> <i class="fa fa-reply"></i> &nbsp; Back to List</a>
+</p>

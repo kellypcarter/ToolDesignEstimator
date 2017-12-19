@@ -1,0 +1,67 @@
+﻿@model Boeing_Tool_Design.Models.AdminViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SaveAdjustments", "Admin"))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label for="NSAR">NSAR Adjustment:</label>
+                @*<input maxlength="100" type="text" class="form-control" id="NSAR" name="NSAR" value="@Model.AdjustFactor.NSAR" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.NSAR, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.NSAR, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="NSRR">NSRR Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="NSRR" name="NSRR" value="@Model.AdjustFactor.NSRR" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.NSRR, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.NSRR, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="stressAnalysis">Stress Analysis Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="stressAnalysis" name="stressAnalysis" value="@Model.AdjustFactor.StressAnalysis" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.StressAnalysis, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.StressAnalysis, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="surfacingRequired">Surfacing Required Adjustment:</label>
+                @*<input maxlength="100" type="text" class="form-control" id="surfacingRequired" name="surfacingRequired" value="@Model.AdjustFactor.SurfacingRequired" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.SurfacingRequired, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.SurfacingRequired, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="engineeringReleased">Engineering Released Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="engineeringReleased" name="engineeringReleased" value="@Model.AdjustFactor.EngineeringReleased" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.EngineeringReleased, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.EngineeringReleased, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="familyfirst">Tool Family 1st Tool Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="familyfirst" name="familyfirst" value="@Model.AdjustFactor.FirstToolInFamily" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.FirstToolInFamily, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.FirstToolInFamily, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="familysecond">Tool Family 2nd Tool Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="familysecond" name="familysecond" value="@Model.AdjustFactor.SecondToolInFamily" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.SecondToolInFamily, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.SecondToolInFamily, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="KBEdev">KBE Development Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="KBEdev" name="KBEdev" value="@Model.AdjustFactor.KBEDevelopment" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.KBEDevelopment, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.KBEDevelopment, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="KBEfollow">KBE Follow On Tooling Adjustment:</label>
+                @*<input maxlength="2000" type="text" class="form-control" id="KBEfollow" name="KBEfollow" value="@Model.AdjustFactor.KBEFollowOnTooling" />*@
+                @Html.TextBoxFor(model => model.AdjustFactor.KBEFollowOnTooling, new { @class = "form-control", @type = "number", min = "0", @step = "any", required = "required" })
+                @Html.ValidationMessageFor(model => model.AdjustFactor.KBEFollowOnTooling, "", new { @class = "text-danger" })
+            </div>
+
+            <button id="saveTool" class="btn btn-primary"> Save </button>
+        }
+    </div>
+</div>

@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="jumbotron">
+        <h1>Boeing Tool Design Estimation</h1>
+        <p class="lead">This website provides Boeing engineers the ability to estimate how long it will take to design a tool by providing information on its type, complexity, and stress types required.</p>
+        <p><a href="@Url.Action("CreateOrder", "Estimates")" class="btn btn-primary btn-lg">Make an estimate &raquo;</a></p>
+    </div>
+<div class="row">
+
+    
+
+    <div class="col-md-4" >
+        <div class="mypage">
+            <h3>Track Design Orders</h3>
+            <ul>
+                <li>
+                    View recent design orders
+                </li>
+                <li>
+                    Sort and filter to find desired order
+                </li>
+                <li>
+                    View all estimates made 
+                </li>
+            </ul>
+            @*<p>
+                View recent design orders&nbsp;&nbsp;&nbsp;<span class="bullet"></span>&nbsp;&nbsp;&nbsp;Sort and filter to find desired order&nbsp;&nbsp;&nbsp;<span class="bullet"></span>&nbsp;&nbsp;&nbsp; View corresponding estimates made 
+            </p>*@
+            <a href="@Url.Action("DesignOrders", "Estimates")" class="btn btn-block btn-primary">View</a>
+        </div>
+    </div>
+
+        <div class="col-md-4">
+            <div class="mypage">
+                <h3>Create Estimates</h3>
+                <ul>
+                    <li>
+                        Create a design order
+                    </li>
+                    <li>
+                        Determine complexity and design requirements
+                    </li>
+                    <li>
+                        View time estimates based on historical data
+                    </li>
+                </ul>
+                @*<p>
+                Create new design order&nbsp;&nbsp;&nbsp;<span class="bullet"></span>&nbsp;&nbsp;&nbsp;Determine tool complexity and design requirements&nbsp;&nbsp;&nbsp;<span class="bullet"></span>&nbsp;&nbsp;&nbsp;View estimated time to completion based on historical data
+            </p>*@
+
+                <a href="@Url.Action("CreateOrder", "Estimates")" class="btn btn-block btn-primary">Create</a>
+                </div>
+            </div>
+
+        <div class="col-md-4">
+            <div class="mypage">
+                <h3>Configure Settings</h3>
+                <ul>
+                    <li>
+                        View account information
+                    </li>
+                    <li>
+                        Change personal information
+                    </li>
+                    <li>
+                        Reset Password
+                    </li>
+                </ul>
+
+                @*<p>
+                View account information&nbsp;&nbsp;&nbsp;<span class="bullet"></span>&nbsp;&nbsp;&nbsp;Save changes
+            </p>*@
+                <a href="@Url.Action("Settings", "User")" class="btn btn-block btn-primary">Edit</a>
+                </div>
+            </div>
+    </div>
+
+   
+
+<style>
+.mypage{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    /*padding: 18px 2px 18px 2px;*/
+    
+    
+}
+
+.mypage h3 {
+    text-align:center;
+}
+
+h3:after
+{
+    content:' ';
+    display:block;
+    margin: 10px;
+    border:1px dashed #394957;
+}
+
+.bullet:before{
+    content:"• ";
+}
+
+.mypage li {
+    margin-top: 15px;
+    margin-bottom:15px;
+}
+</style>

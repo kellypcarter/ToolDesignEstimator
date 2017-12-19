@@ -1,0 +1,225 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>
+    <center>Create new estimate</center><br />
+    <strong>Design Order Number:</strong> @Model.DesignOrders.First().DesignOrderNumber <br />
+    <strong>Part Number:</strong> @Model.DesignOrders.First().PartNumber<br />
+    <strong>Tool Type:</strong> @(Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == Model.DesignOrders.First().ToolTypeID).ToolCode) 
+
+</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @* Show estimate value summary if they've submitted the form *@
+    if (Model.Estimates.First().HoursEstimate > 0)
+    {
+        <fieldset>
+            <h3>Estimate Preview: <b>@Html.Raw(ViewBag.TotalHours) hours</b></h3>
+
+            <p><strong>Design Hours: @Html.Raw(ViewBag.DesignHour)</strong></p>
+            <p><strong>Stress Hours: @Html.Raw(ViewBag.StressHour)</strong></p>
+            <p><strong>Check Hours: @Html.Raw(ViewBag.CheckHour)</strong></p>
+            <p><strong>Release Hours: @Html.Raw(ViewBag.ReleaseHour)</strong></p>
+            <p><strong>Design Flow (M Days): @Html.Raw(ViewBag.FlowDays)</strong></p>
+
+            @* If this is one of the KBE classes, then show KBE information summary *@
+            @*@if (Model.Estimates.First().FamilyClassID
+                                        ==
+                                        Model.FamilyClasses.Where(fc => fc.FamilyClassName.Contains("KBE Development Tool")).First().FamilyClassID)
+            {
+                <p><strong>Number of designs needed to break even:</strong> ###</p>
+            }*@
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button name="accept" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Accept this Estimate</button>
+                </div>
+            </div>
+
+        </fieldset>
+
+    }
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Estimates.First().DesignOrderSID)
+
+        @* Stress Work Type *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().StressWorkTypeID, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="StressWorkTypeID">Stress Work Type</label>
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Estimates.First().StressWorkTypeID, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.DropDownListFor(model => model.Estimates.First().StressWorkTypeID, new SelectList(Model.StressWorkTypes, "StressWorkTypeID", "StressWorkTypeName"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Estimates.First().StressWorkTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Is Stress Included *@
+        <div class="form-group">
+            <label class="control-label col-md-2" for="IsStressIncluded">Stress Hours Included</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Estimates.First().IsStressIncluded)
+                </div>
+            </div>
+        </div>
+
+        @* Needs Surfacing *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().NeedsSurfacing, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="NeedsSurfacing">Needs Surfacing</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Estimates.First().NeedsSurfacing)
+                    @Html.ValidationMessageFor(model => model.Estimates.First().NeedsSurfacing, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        @Html.ValidationMessageFor(model => model.Estimates.First().IsStressIncluded, "", new { @class = "text-danger" })
+
+        @* Engineering Released *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().EngineeringReleased, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="EngineeringReleased">Engineering Released</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Estimates.First().EngineeringReleased)
+                    @Html.ValidationMessageFor(model => model.Estimates.First().EngineeringReleased, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @* Complexity Level *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().ComplexityLevel, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="ComplexityLevel">Complexity Level</label>
+            <div class="col-md-10">
+                <select name="ComplexityLevel" id="complexityimgs" class="image-picker show-labels show-html">
+                    @{int i = 1;}
+
+                    @foreach (var item in Model.Statistics.Where(u => u.isCurrent == true).Where(u => u.ToolTypeID == Model.DesignOrders.First().ToolTypeID).OrderBy(x => x.ComplexityLevel))
+                    {
+                        <option data-img-class="id-@item.ComplexityLevel" data-img-src="@item.ImageFilePath" value="@item.ComplexityLevel"></option>
+                        i++;
+                    }
+
+                </select>
+
+            </div>
+        </div>
+
+        @* Family Class *@
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.Estimates.First().FamilyClassID, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <label class="control-label col-md-2" for="FamilyClassID">Family Class</label>
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Estimates.First().FamilyClassID, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.DropDownListFor(
+                model => model.Estimates.First().FamilyClassID,
+                new SelectList(Model.FamilyClasses, "FamilyClassID", "FamilyClassName"),
+                new { @class = "form-control" }
+            )
+                @Html.ValidationMessageFor(model => model.Estimates.First().FamilyClassID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Comment *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.Estimates.First().Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Estimates.First().Comment, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Estimates.First().Comment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Reason  for this estimate Change *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.Estimates.First().ReasonForEstimateChange, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Estimates.First().ReasonForEstimateChange == null)
+            {
+                    @Html.EditorFor(model => model.Estimates.First().ReasonForEstimateChange, new { htmlAttributes = new { @class = "form-control" } })
+            }
+            else
+            {
+                    @Html.TextBoxFor(model => model.Estimates.First().ReasonForEstimateChange, new { @class = "form-control", @readonly = "readonly" })
+            }
+                @Html.ValidationMessageFor(model => model.Estimates.First().ReasonForEstimateChange, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="previewbtn" name="preview" type="submit" value="Preview Estimate" class="btn btn-primary" />
+            </div>
+        </div>
+</div>
+        }
+
+        <div style="display:table-row;">
+            @*@Html.ActionLink("Back to List", "List", new { id = ViewBag.DesignOrderSID }, new { @class = "btn btn-default" })*@
+            <a class="btn btn-default" href="@Url.Action("List", "Estimates", new { id = ViewBag.DesignOrderSID })"> <i class="fa fa-reply"></i> &nbsp; Back to List</a>
+        </div>
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+
+            <script>
+
+                $(function () {
+                    $('#IsStressIncluded').on('click', function () {
+                        if ($(this).is(':checked')) {
+                            $('#StressWorkTypeID').prop('disabled', true);
+                        } else {
+                            $('#StressWorkTypeID').prop('disabled', false);
+                        }
+                    });
+                });
+
+            </script>
+        }
+
+        <script type='text/javascript' src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script type='text/javascript' src="~/Scripts/image-picker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="~/Content/image-picker.css" />
+
+        <script type="text/javascript">
+            $("#complexityimgs").imagepicker({
+                hide_select: true,
+                show_label: false
+            });
+
+            // Add selection to picture that estimate is based on, if estimate has been submitted
+            if ("@ViewBag.complexity" != "") {
+                $(".id-@ViewBag.complexity").parent().click()
+            }
+            else {
+                // Set it to the selected estimate of the latest estimate for the design order
+                $(".id-@Model.Estimates.First().ComplexityLevel").parent().click()
+            }
+
+            // If estimate has NOT been submited, check is stress included box and disable stress work type
+            if ("@ViewBag.complexity" == "") {
+                if ("@Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == Model.DesignOrders.First().ToolTypeID).IsStressRequiredDefault" == 'True') {
+                    $("#IsStressIncluded").prop("checked", true);
+                    $('#StressWorkTypeID').prop('disabled', true);
+                }
+            }
+
+
+
+        </script>
+
+        <style>
+            .image_picker_image {
+                max-height: 250px;
+            }
+        </style>

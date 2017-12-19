@@ -1,0 +1,369 @@
+﻿@model Boeing_Tool_Design.Models.AdminViewModel
+
+
+@{
+    ViewBag.Title = "Configure Statistics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Admin Portal</h2>
+
+<main>
+
+    <input id="tab1" type="radio" name="tabs" checked>
+    <label class="tablabel" for="tab1">Edit Stats</label>
+
+    <input id="tab2" type="radio" name="tabs">
+    <label class="tablabel" for="tab2">Add Tool</label>
+
+    <input id="tab3" type="radio" name="tabs">
+    <label class="tablabel" for="tab3">Edit Tool</label>
+
+    <input id="tab4" type="radio" name="tabs">
+    <label class="tablabel" for="tab4">Adjustment Factors</label>
+
+    <input id="tab5" type="radio" name="tabs">
+    <label class="tablabel" for="tab5">User Permissions</label>
+
+    <section class="sectionborder" id="section1">
+        <div class="row">
+            <div class="col-md-6">
+                <form id="getStDevForm">
+                    <div class="form-group">
+                        <label for="sel1">Tool:</label>
+                        <select name='tools' onchange="toolSelectCheck();" class="form-control" id="toolselect">
+                            <option></option>
+                            @foreach (var item in Model.ToolTypes)
+                            {
+                                <option>
+                                    @item.ToolCode
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div id="ifToolSelected" style="display: none;" class="form-group">
+                        <label for="sel1">Complexity Level:</label>
+                        <select name='complexity' onchange="complexSelectCheck();" class="form-control" id="complexselect">
+                            <option></option>
+                            @foreach (var item2 in Model.ComplexityLevels)
+                            {
+                                <option>
+                                    @item2.ComplexityLevelNum
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </form>
+
+                <form id="changeDataForm" onsubmit="submitAll()" enctype="multipart/form-data">
+
+                    <div class="form-group ifComplex" style="display: none;">
+                        <label for="stDev">Standard Deviation:</label>
+                        <input name='stdeviation' type="number" min ="0" step="any" class="form-control" id="stDev" required>
+                    </div>
+
+                    <div class="form-group ifComplex" style="display: none;">
+                        <label for="bsHrs">Baseline Hours:</label>
+                        <input name='hours' type="number" step="any" min="0" class="form-control" id="bsHrs" required>
+                    </div>
+
+                    <div class="form-group ifComplex" style="display: none;">
+                        <label for="bsHrs">Release Hours:</label>
+                        <input name='releasehours' type="number" step="any" min="0" class="form-control" id="releaseHrs" required>
+                    </div>
+
+                    <div class="form-group ifComplex" style="display: none;">
+                        <label for="comment">Notes:</label>
+                        <textarea name='notes' class="form-control" rows="5" id="notes"></textarea>
+                    </div>
+                    <button id="saveAll" style="display: none;" class="ifComplex btn btn-primary"> Save Changes </button>
+            </div>
+
+            <div style="padding:20px;" class="col-md-6">
+                <img class="ifComplex" style="max-height:200px; display: none;" id="toolpic" src="" />
+                <img class="" style="max-height:200px; display: none;" id="replacementtoolpic" src="" />
+
+                <div class="form-group ifComplex" style="display: none;">
+                    <input onchange="readURL(this);" type="file" name="file" id="file" size='50' class="inputfile" />
+                    <label style="margin-top:10px;" id="fileLabel" for="file">Upload</label>
+                    <label onclick="removeFile()" style="display:none;" id="showFileName"></label>
+                </div>
+            </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <section class="sectionborder" id="section2">
+         @Html.Partial("AddTool")
+    </section>
+
+    <section class="sectionborder" id="section3">
+         @Html.Partial("EditTool")
+    </section>
+
+    <section class="sectionborder" id="section4">
+         @Html.Partial("AdjustmentFactors")
+    </section>
+
+    <section class="sectionborder" id="section5">
+         @Html.Partial("UserPermissions")
+    </section>
+</main>
+
+
+
+
+
+
+
+<style>
+
+    .inputfile {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+
+        .inputfile + label, #showFileName {
+            color: white;
+            background-color: #428BCA;
+            display: inline-block;
+            cursor: pointer;
+            padding: 6px 12px;
+        }
+
+            .inputfile:focus + label,
+            .inputfile + label:hover, #showFileName:hover {
+                background-color: #3175AF;
+            }
+
+
+        .inputfile:focus + label {
+            outline: 1px dotted #000;
+            outline: -webkit-focus-ring-color auto 5px;
+        }
+
+
+
+    .sectionborder {
+        border-left: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        padding: 20px;
+    }
+
+
+
+
+    main {
+        min-width: 320px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    section {
+        display: none;
+        padding: 20px 0 0;
+        border-top: 1px solid #ddd;
+    }
+
+    input {
+        display: none;
+    }
+
+    .tablabel {
+        display: inline-block;
+        margin: 0 0 -1px;
+        padding: 15px 25px;
+        font-weight: 600;
+        text-align: center;
+        color: #bbb;
+    }
+
+        .tablabel:before {
+            font-family: fontawesome;
+            font-weight: normal;
+            margin-right: 10px;
+        }
+
+        .tablabel[for*='1']:before {
+            content: '\f040';
+        }
+
+        .tablabel[for*='2']:before {
+            content: '\f067';
+        }
+
+        .tablabel[for*='3']:before {
+            content: '\f0ad';
+        }
+
+        .tablabel[for*='4']:before {
+            content: '\f1de';
+        }
+
+        .tablabel[for*='5']:before {
+            content: '\f0c0';
+        }
+
+        .tablabel:hover {
+            color: #888;
+            cursor: pointer;
+        }
+
+    input:checked + .tablabel {
+        color: #555;
+        border: 1px solid #ddd;
+        border-top: 2px solid #3277BD;
+        border-bottom: 1px solid #fff;
+    }
+
+    #tab1:checked ~ #section1,
+    #tab2:checked ~ #section2,
+    #tab3:checked ~ #section3,
+    #tab4:checked ~ #section4,
+    #tab5:checked ~ #section5 {
+        display: block;
+    }
+</style>
+
+<script src="/Scripts/jquery-1.10.2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-checkbox/1.4.0/bootstrap-checkbox.min.js" integrity="sha256-OJdTB2iJONmTrUs5+44l5hrNDmyqd6mgm0lBgF3jts4=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+
+
+
+    function removeFile() {
+        $('#showFileName').css('display', 'none');
+        $('#fileLabel').css('display', 'inline-block');
+        $('#replacementtoolpic').attr('src', '').css('display', 'none');
+        $('#toolpic').css('display', 'inline-block');
+        $("#file").val('');
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#replacementtoolpic')
+						.attr('src', e.target.result).css('display', 'inline-block');
+                $('#toolpic').css('display', 'none');
+            };
+
+            reader.readAsDataURL(input.files[0]);
+
+            //In Internet Explorer "trusted sites" gives that site your full path rather than fakepath that it & chrome gives, so check if filepath contains "fakepath"
+            // AKA contains fake path
+            if ($('#file').val().indexOf("fakepath") >= 0) {
+                var filepath = $('#file').val().replace(/C:\\fakepath\\/i, '');
+            }
+            else {
+                console.log($('#file').val())
+                var lastIndex = $('#file').val().lastIndexOf('\\');
+                console.log(lastIndex);
+                console.log($('#file').val().substr(lastIndex).replace('\\', ''));
+                var filepath = $('#file').val().substr(lastIndex).replace('\\', '');
+
+            }
+
+           
+            $('#fileLabel').css('display', 'none');
+            $('#showFileName').html('<span>' + filepath + "<i style='padding-left:10px;' class='fa fa-times'></i></span>").css('display', 'inline-block');
+        }
+    }
+
+
+    function submitAll() {
+
+        var formData = new FormData($('#changeDataForm')[0]);
+        formData.append('tools', $('#toolselect').val())
+        formData.append('complexity', $('#complexselect').val())
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/saveStatistics",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+            },
+            error: function () {
+            }
+        });
+
+    };
+
+
+    function browseFile() {
+        event.preventDefault();
+        $('#imgupload').trigger('click');
+    };
+    function toolSelectCheck() {
+        var toolselection = $('#toolselect').find(":selected").text();
+        var complexselection = $('#complexselect').find(":selected").text();
+        if (toolselection != "") {
+            $("#ifToolSelected").css("display", "block")
+            if (complexselection != "") {
+                // AKA THEY ARE EDITING TOOL SELECTION
+                sendAjax("/Admin/getStDev", "$('#stDev').val(result);");
+                sendAjax("/Admin/getAverageHours", "$('#bsHrs').val(result);");
+                sendAjax("/Admin/getReleaseHours", "$('#releaseHrs').val(result);");
+                sendAjax("/Admin/getImagePath", "$('#toolpic').attr('src', result);");
+                sendAjax("/Admin/getNotes", "$('#notes').val(result);");
+
+
+                $(".ifComplex").css("display", "block")
+            }
+        } else {
+            $("#ifToolSelected").css("display", "none")
+            $(".ifComplex").css("display", "none")
+        }
+
+
+    };
+
+    function complexSelectCheck() {
+        var complexselection = $('#complexselect').find(":selected").text();
+        $('#toolselect').prop("readonly", true);
+        if (complexselection != "") {
+
+            $(".ifComplex").css("display", "block");
+
+            sendAjax("/Admin/getStDev", "$('#stDev').val(result);");
+            sendAjax("/Admin/getAverageHours", "$('#bsHrs').val(result);");
+            sendAjax("/Admin/getReleaseHours", "$('#releaseHrs').val(result);");
+            sendAjax("/Admin/getImagePath", "$('#toolpic').attr('src', result);");
+            sendAjax("/Admin/getNotes", "$('#notes').val(result);");
+
+
+        }
+        else {
+            $(".ifComplex").css("display", "none")
+        }
+    }
+
+    function sendAjax(URL_address, show) {
+        $.ajax({
+            type: "POST",
+            url: URL_address,
+            data: $('#getStDevForm').serialize(),
+            success: function (result) {
+                eval(show);
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    };
+
+
+</script>

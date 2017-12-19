@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Boeing_Tool_Design.Models.Estimate>
+
+@{
+    ViewBag.Title = "View Current Estimates";
+}
+
+<h2>Index</h2>
+
+<p>@ViewBag.DesignOrderSID</p>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DesignOrderSID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NeedsSurfacing)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StressWorkTypeID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ComplexityLevel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ToolTypeID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EngineeringReleased)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FamilyClassID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.KBEClassID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HoursEstimate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsLatestEstimate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReasonForEstimateChange)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedByUserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdatedDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DesignOrderSID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NeedsSurfacing)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StressWorkTypeID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ComplexityLevel)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ToolTypeID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EngineeringReleased)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FamilyClassID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.KBEClassID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HoursEstimate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsLatestEstimate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReasonForEstimateChange)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedByUserID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdatedDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EstimateID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EstimateID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EstimateID })
+        </td>
+    </tr>
+}
+
+</table>

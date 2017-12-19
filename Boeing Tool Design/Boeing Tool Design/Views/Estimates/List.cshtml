@@ -1,0 +1,157 @@
+﻿@model Boeing_Tool_Design.Models.EstimatesViewModel
+
+@{
+    ViewBag.Title = "List";
+    Boeing_Tool_Design.Models.DesignOrder DOrder = Model.DesignOrders.First();
+
+}
+
+
+@*<h2>Estimate List <br />
+    <strong>Design Order Number:</strong> @Model.DesignOrders.First().DesignOrderNumber <br />
+    <strong>Tool Type:</strong> @(Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == Model.DesignOrders.First().ToolTypeID).ToolTypeName) <br />
+    <strong>Part Number:</strong> @Model.DesignOrders.First().PartNumber</h2>*@
+
+<style>
+    /* tables */
+    table.tablesorter {
+        font-family: arial;
+        background-color: #CDCDCD;
+        margin: 10px 0pt 15px;
+        /*font-size: 8pt;*/
+        width: 100%;
+        text-align: left;
+    }
+
+        table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+            background-color: #e6EEEE;
+            border: 1px solid #FFF;
+            font-size: 8pt;
+            padding: 4px;
+        }
+
+        table.tablesorter thead tr .header {
+            background-image: url(/Content/sortertable/bg.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+        table.tablesorter tbody td {
+            color: #3D3D3D;
+            padding: 4px;
+            background-color: #FFF;
+            vertical-align: top;
+        }
+
+        table.tablesorter tbody tr.odd td {
+            background-color: #F0F0F6;
+        }
+
+        table.tablesorter thead tr .headerSortUp {
+            background-image: url(/Content/sortertable/asc.gif);
+        }
+
+        table.tablesorter thead tr .headerSortDown {
+            background-image: url(/Content/sortertable/desc.gif);
+        }
+
+        table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+            background-color: #8dbdd8;
+        }
+</style>
+
+<h2>Design Order</h2>
+<table class="table tablesorter" style="font-size:2rem;">
+    <thead>
+        <tr>
+            <th style="font-size:2rem;">Design Order Number</th>
+            <th style="font-size:2rem;">Tool Type</th>
+            <th style="font-size:2rem;">Part Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@DOrder.DesignOrderNumber</td>
+            <td>@(Model.ToolTypes.FirstOrDefault(t => t.ToolTypeID == DOrder.ToolTypeID).ToolCode)</td>
+            <td>@DOrder.PartNumber</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 style="display:inline-block">Estimate List</h2>
+
+
+    @*@Html.ActionLink("Create New", "Create", new { id = Model.DesignOrders.First().DesignOrderSID })*@
+    <a style="margin-top:20px; display:inline-block;" class="btn btn-primary pull-right" href="@Url.Action("Create", "Estimates", new { id = Model.DesignOrders.First().DesignOrderSID })"> <i class="glyphicon glyphicon-plus"></i> Create Estimate</a>
+
+
+
+@if (Model.Estimates.Count > 0)
+{ 
+<table class="table tablesorter" id="EstimatesTable">
+    <thead>
+        <tr>
+            <th>Is Latest</th>
+            <th>@Html.DisplayNameFor(model => model.Estimates[0].CreatedDate)</th>
+            <th>@Html.DisplayNameFor(model => model.Estimates[0].HoursEstimate)</th>
+            <th>@Html.DisplayNameFor(model => model.Estimates[0].ReasonForEstimateChange)</th>
+            <th>Creator</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Estimates)
+        {
+            <tr>
+                <td>
+                    @if (item.IsLatestEstimate)
+                    {
+                        // Hidden span for preserving the ability to sort
+                        <span style="display:none;">1</span><span class="fa fa-check-square-o"></span>
+                    }
+                    else
+                    {
+                        <span class="fa fa-square-o"></span>
+                    }
+                </td>
+                <td>
+                    @item.getFormattedCreatedDate()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoursEstimate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReasonForEstimateChange)
+                </td>
+                <td>
+                    @(Model.AppUsers.FirstOrDefault(u => u.AppUserID == item.CreatedByUserID) != null ? Model.AppUsers.First(u => u.AppUserID == item.CreatedByUserID).GetFullName() : "Unknown")
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.EstimateID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.EstimateID },
+                        new { onclick = "return confirm('Are you sure you want to delete this estimate?')" })
+                </td>
+            </tr>
+        } @*END OF FOREACH*@
+    </tbody>
+</table>
+}@*END OF IF*@
+else
+{
+    <p>No Estimates</p>
+}@*END ELSE*@
+
+
+<p>
+    @*@Html.ActionLink("Back to List", "DesignOrders")*@
+    <a class="btn btn-default" href="@Url.Action("DesignOrders", "Estimates")"> <i class="fa fa-reply"></i> &nbsp; Back to List</a>
+</p>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("#EstimatesTable").tablesorter();
+        });
+    </script>
+}

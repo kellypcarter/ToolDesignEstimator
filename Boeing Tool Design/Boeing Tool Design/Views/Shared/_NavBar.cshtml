@@ -1,0 +1,25 @@
+﻿@model int
+
+@*If user is an admin display admin bar*@
+    
+@if (Model == 1)
+{
+    <ul class="nav navbar-nav navbar nav-center">
+        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+        <li><a href="/estimates/designorders">View Estimates</a></li>
+        <li><a href="/estimates/CreateOrder">Create New Estimate</a></li>
+        <li>@Html.ActionLink("Settings", "Settings", "User")</li>
+        <li>@Html.ActionLink("Admin Portal", "Statistics", "Admin")</li>
+    </ul>
+}
+
+@*If user is not logged in or are just a user, don't display admin bar*@
+else
+{
+<ul class="nav navbar-nav navbar nav-center">
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li><a href="/estimates/designorders">View Estimates</a></li>
+    <li><a href="/estimates/CreateOrder">Create New Estimate</a></li>
+    <li>@Html.ActionLink("Settings", "Settings", "User")</li>
+</ul>
+}

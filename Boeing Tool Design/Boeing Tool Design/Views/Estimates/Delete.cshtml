@@ -1,0 +1,144 @@
+﻿@model Boeing_Tool_Design.Models.Estimate
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Estimate</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DesignOrderSID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DesignOrderSID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NeedsSurfacing)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NeedsSurfacing)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StressWorkTypeID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StressWorkTypeID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ComplexityLevel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ComplexityLevel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ToolTypeID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ToolTypeID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EngineeringReleased)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EngineeringReleased)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FamilyClassID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FamilyClassID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.KBEClassID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.KBEClassID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HoursEstimate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HoursEstimate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsLatestEstimate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsLatestEstimate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReasonForEstimateChange)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReasonForEstimateChange)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedByUserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedByUserID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedDate)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Estimator</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")" />
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="container">
+            <div id="topNav" class="row">
+                <span style="font-size:0;" id="logo">
+                    <a href="@Url.Action("Index", "Home")" class="">
+                        <img style="height:60px; margin-top: 10px;" src="../../content/boeinglogo.png" title="title" alt="additional title" />
+                    </a>
+                    <span id="title">Tool Design Estimating Database</span>
+                </span>
+
+                <ul id="hideOnCollapse" class="nav navbar-nav navbar-right">
+                    <li>@Html.Partial("_LoginPartial")</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="bottomNavRow" class="row">
+            <button style="margin-right: 30px;" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <div id="bottomNav" class="nav navbar-collapse collapse nav-center">
+                <ul id="showOnCollapse" class="nav text-center">
+                    @if (Request.IsAuthenticated)
+                    {
+                      
+                        @Html.AntiForgeryToken()
+                        <li onclick="javascript: document.getElementById('logoutForm').submit()"><a>Log off</a></li>
+                        
+                    }
+                    else
+                    {
+                        <li> @Html.ActionLink("Log in", "Login", "User", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                        <li> @Html.ActionLink("Register", "Register", "User", new { id = "registerLink" }, new { @class = "register" })</li>
+
+                    }
+                    <li><a href="">Help <i class="fa fa-question"></i></a></li>
+                </ul>
+
+                @Html.Action("NavBar", "Home")
+
+            </div>
+        </div>
+        
+        <div id="breadcrumbsRow" class="row">
+            <div class="container">
+                @*@Html.MvcSiteMap().SiteMapPath()*@
+            </div>
+        </div>
+
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>Copyright &copy; 1995-@DateTime.Now.Year Boeing. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
